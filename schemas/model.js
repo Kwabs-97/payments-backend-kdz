@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
-import { plansSchema, subscriptionSchema } from ".";
+import { plansSchema, subscriptionSchema } from "./index.js";
 
-const Susbscription = mongoose.model("Subscription", subscriptionSchema);
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
 const Plans = mongoose.model("Plans", plansSchema);
-export { Plans, Susbscription }
+export { Plans, Subscription };

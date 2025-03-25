@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { randomUUID } from 'crypto'
+
 const plansSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
@@ -14,7 +14,6 @@ const plansSchema = new mongoose.Schema({
   },
 });
 
-import mongoose from "mongoose";
 const subscriptionSchema = new mongoose.Schema({
   business_id: {
     type: String,
@@ -23,14 +22,14 @@ const subscriptionSchema = new mongoose.Schema({
   },
 
   email: { type: String, required, unique },
-  plan_id: { type: mongoose.Types.ObjectId, required, ref: 'Plans' },
+  plan_id: { type: mongoose.Types.ObjectId, required, ref: "Plans" },
   payment_platform: {
     token: {
       type: String,
-      required
+      required,
     },
     external_id: { type: String, required },
-    name: { type: String, required, enum: ['Paypal', 'Stripe'] }
+    name: { type: String, required, enum: ["Paypal", "Stripe"] },
   },
 });
 
