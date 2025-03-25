@@ -61,13 +61,17 @@ const insertData = async () => {
   const insertPlans = async () => {
     try {
       console.log("inserting plans data ---");
-      await Plans.insertMany(plansData);
+      const insertedData = await Plans.insertMany(plansData);
       console.log("inserting plans data --- complete");
+      return insertedData;
     } catch (error) {
       console.log("error inserting plans data ---", error);
     }
   };
   insertPlans();
+
+  const inSertedPlansData = insertPlans();
+  console.log(inSertedPlansData);
 
   //susbscription data generation and insertion start
 
@@ -82,49 +86,50 @@ const insertData = async () => {
   //     name: 'stripe' or 'paypal'
   //     }
   //     }
-  const subscriptions = [];
-  function genSubscriptionData() {
-    //subscription data
-    const subscriptionCounts = {
-      Freemium: 500,
-      Bronze: 7000,
-      Silver: 12000,
-      Gold: 8000,
-      Platinum: 5000,
-    };
 
-    //generate subscription data
-    console.log("generating subscription data --- start");
-    for (const plan of plansData) {
-      const count = subscriptionCounts[plan.name];
-      for (let i = 0; i < count; i++) {
-        subscriptions.push({
-          business_id: uuidv4(),
-          email: `unique_business@${i}.com`,
-          plan_id: plan._id,
-          payment_platform: {
-            token: uuidv4(),
-            external_id: uuidv4(),
-            name: Math.random() > 0.5 ? "Stripe" : "Paypal",
-          },
-        });
-      }
-    }
-    console.log("generating subscription data --- complete");
-    console.log("subscription data ---", subscriptions);
-  }
-  genSubscriptionData();
+  //   const subscriptions = [];
+  //   function genSubscriptionData() {
+  //     //subscription data
+  //     const subscriptionCounts = {
+  //       Freemium: 500,
+  //       Bronze: 7000,
+  //       Silver: 12000,
+  //       Gold: 8000,
+  //       Platinum: 5000,
+  //     };
 
-  const insertSubscriptions = async () => {
-    try {
-      console.log("inserting subscription data --- start");
-      await Subscription.insertMany(subscriptions);
-      console.log("inserting subscription data --- complete");
-    } catch (error) {
-      console.log("error inserting subscription data", error);
-    }
-  };
-  insertSubscriptions();
+  //     //generate subscription data
+  //     console.log("generating subscription data --- start");
+  //     for (const plan of plansData) {
+  //       const count = subscriptionCounts[plan.name];
+  //       for (let i = 0; i < count; i++) {
+  //         subscriptions.push({
+  //           business_id: uuidv4(),
+  //           email: `unique_business@${i}.com`,
+  //           plan_id: plan._id,
+  //           payment_platform: {
+  //             token: uuidv4(),
+  //             external_id: uuidv4(),
+  //             name: Math.random() > 0.5 ? "Stripe" : "Paypal",
+  //           },
+  //         });
+  //       }
+  //     }
+  //     console.log("generating subscription data --- complete");
+  //     console.log("subscription data ---", subscriptions);
+  //   }
+  //   genSubscriptionData();
+
+  //   const insertSubscriptions = async () => {
+  //     try {
+  //       console.log("inserting subscription data --- start");
+  //       await Subscription.insertMany(subscriptions);
+  //       console.log("inserting subscription data --- complete");
+  //     } catch (error) {
+  //       console.log("error inserting subscription data", error);
+  //     }
+  //   };
+  //   insertSubscriptions();
 };
 
 insertData();
