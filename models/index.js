@@ -1,5 +1,8 @@
 import { Plans, Subscription } from "../schemas/model.js";
 import { v4 as uuidv4 } from "uuid";
+import connect from "../app.js";
+
+await connect();
 
 const insertData = async () => {
   const plansData = [
@@ -63,73 +66,72 @@ const insertData = async () => {
       console.log("inserting plans data ---");
       const insertedData = await Plans.insertMany(plansData);
       console.log("inserting plans data --- complete");
+      console.log(insertedData);
       return insertedData;
     } catch (error) {
       console.log("error inserting plans data ---", error);
     }
   };
-  insertPlans();
 
-  const inSertedPlansData = insertPlans();
-  console.log(inSertedPlansData);
+  //   susbscription data generation and insertion start
 
-  //susbscription data generation and insertion start
-
-  // const platinumSubscription = {
-  //     business_id: generate_unique_id,
-  //     email: unique_business_email,
-  //     plan_id: platinum_id, //This represents the id of the
-  //     platinum plan
-  //     payment_platform: {
-  //     token: random_string_token,
-  //     external_id: random_string,
-  //     name: 'stripe' or 'paypal'
-  //     }
-  //     }
-
-  //   const subscriptions = [];
-  //   function genSubscriptionData() {
-  //     //subscription data
-  //     const subscriptionCounts = {
-  //       Freemium: 500,
-  //       Bronze: 7000,
-  //       Silver: 12000,
-  //       Gold: 8000,
-  //       Platinum: 5000,
-  //     };
-
-  //     //generate subscription data
-  //     console.log("generating subscription data --- start");
-  //     for (const plan of plansData) {
-  //       const count = subscriptionCounts[plan.name];
-  //       for (let i = 0; i < count; i++) {
-  //         subscriptions.push({
-  //           business_id: uuidv4(),
-  //           email: `unique_business@${i}.com`,
-  //           plan_id: plan._id,
-  //           payment_platform: {
-  //             token: uuidv4(),
-  //             external_id: uuidv4(),
-  //             name: Math.random() > 0.5 ? "Stripe" : "Paypal",
-  //           },
-  //         });
+  //   const platinumSubscription = {
+  //       business_id: generate_unique_id,
+  //       email: unique_business_email,
+  //       plan_id: platinum_id, //This represents the id of the
+  //       platinum plan
+  //       payment_platform: {
+  //       token: random_string_token,
+  //       external_id: random_string,
+  //       name: 'stripe' or 'paypal'
   //       }
-  //     }
-  //     console.log("generating subscription data --- complete");
-  //     console.log("subscription data ---", subscriptions);
-  //   }
-  //   genSubscriptionData();
+  //       }
 
-  //   const insertSubscriptions = async () => {
-  //     try {
-  //       console.log("inserting subscription data --- start");
-  //       await Subscription.insertMany(subscriptions);
-  //       console.log("inserting subscription data --- complete");
-  //     } catch (error) {
-  //       console.log("error inserting subscription data", error);
-  //     }
-  //   };
-  //   insertSubscriptions();
+  const subscriptions = [];
+  async function genSubscriptionData() {
+    const insertedPlansData = await insertPlans();
+    console.log(insertedPlansData);
+    //subscription data
+    const subscriptionCounts = {
+      Freemium: 500,
+      Bronze: 7000,
+      Silver: 12000,
+      Gold: 8000,
+      Platinum: 5000,
+    };
+
+    //generate subscription data
+    console.log("generating subscription data --- start");
+    for (const plan of insertedPlansData) {
+      const count = subscriptionCounts[plan.name];
+      for (let i = 0; i < count; i++) {
+        subscriptions.push({
+          business_id: uuidv4(),
+          email: `unique_business@${i}.com`,
+          plan_id: plan._id,
+          payment_platform: {
+            token: uuidv4(),
+            external_id: uuidv4(),
+            name: Math.random() > 0.5 ? "Stripe" : "Paypal",
+          },
+        });
+      }
+    }
+    console.log("generating subscription data --- complete");
+    console.log("subscription data ---", subscriptions);
+  }
+  await genSubscriptionData();
+
+  const insertSubscriptions = async () => {
+    try {
+      console.log("inserting subscription data --- start");
+      await Subscription.insertMany(subscriptions);
+      console.log("inserting subscription data --- complete");
+    } catch (error) {
+      console.log("error inserting subscription data", error);
+    }
+  };
+  await insertSubscriptions();
 };
 
-insertData();
+await insertData();
