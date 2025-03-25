@@ -81,7 +81,8 @@ customize: true
 }
 }
 const bronze = {
-name: 'Bronze',price: 30,
+name: 'Bronze',
+price: 30,
 period: 'monthly',
 status: 'A',
 features: {
