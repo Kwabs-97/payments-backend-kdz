@@ -5,6 +5,10 @@ import { Plan, Subscription } from "../schemas/index.js";
 const insertData = async () => {
   // insert plans
   const insertPlans = async () => {
+    console.log("clear database -- start");
+    await Plan.deleteMany({});
+    await Subscription.deleteMany({});
+    console.log("clear database -- complete");
     try {
       console.log("inserting plans data --- start");
       const plans = await Plan.insertMany(plansData);
