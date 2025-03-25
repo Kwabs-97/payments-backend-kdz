@@ -3,7 +3,8 @@ import { insertData, getSubscriptions } from "./model/index2.js";
 async function main() {
   await dbConnect();
   // await insertData();
-  getSubscriptions();
+  const subscriptions = await getSubscriptions();
+  console.log(subscriptions["0"].plan_id.price);
 }
 
 await main();
