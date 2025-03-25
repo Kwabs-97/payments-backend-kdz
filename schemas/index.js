@@ -33,4 +33,34 @@ const subscriptionSchema = new mongoose.Schema({
   },
 });
 
-export { plansSchema, subscriptionSchema };
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
+const Plan = mongoose.model("Plans", plansSchema);
+export { Plan, Subscription };
+
+//Plans Schema
+// {
+//   name: 'String',​
+//   price: 'Number',
+//   period: 'String',
+//   status: 'A' | 'D',
+//   features: {​
+//   videos: boolean,
+//   audio: boolean,
+//   download: boolean,
+//   streaming: boolean,
+//   customize: boolean​
+//   }
+//   payment_platform_name}
+
+// Subscriptions Schema
+
+// {
+//   business_id: 'String',
+//   email: 'String',
+//   plan_id: 'String',
+//   payment_platform: {
+//   token: 'String',
+//   external_id: 'String',
+//   name: 'Stripe' | 'Paypal
+//   }
+//   }

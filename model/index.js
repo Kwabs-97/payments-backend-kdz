@@ -1,29 +1,21 @@
-import { Plans, Subscription } from "../schemas/model.js";
 import { v4 as uuidv4 } from "uuid";
-import connect from "../app.js";
-
-await connect();
+import { plansData } from "../data/plans.data.js";
+import { Plan, Subscription } from "../schemas/index.js";
 
 const insertData = async () => {
-  
-
   // insert plans
   const insertPlans = async () => {
     try {
-      console.log("inserting plans data ---");
-      const insertedData = await Plans.insertMany(plansData);
+      console.log("inserting plans data --- start");
+      const plans = await Plan.insertMany(plansData);
       console.log("inserting plans data --- complete");
-      console.log(insertedData);
-      return insertedData;
+      return plans;
     } catch (error) {
       console.log("error inserting plans data ---", error);
     }
   };
 
-  const subscriptions = [];
-  async function genSubscriptionData() {
-    const insertedPlansData = await insertPlans();
-    console.log(insertedPlansData);
+  const genSubscriptionsData = (plans) => {
     //subscription data
     const subscriptionCounts = {
       Freemium: 500,
@@ -33,9 +25,11 @@ const insertData = async () => {
       Platinum: 5000,
     };
 
+    const subscriptions = [];
+
     //generate subscription data
     console.log("generating subscription data --- start");
-    for (const plan of insertedPlansData) {
+    for (const plan of plans) {
       const count = subscriptionCounts[plan.name];
       for (let i = 0; i < count; i++) {
         subscriptions.push({
@@ -51,11 +45,10 @@ const insertData = async () => {
       }
     }
     console.log("generating subscription data --- complete");
-    console.log("subscription data ---", subscriptions);
-  }
-  await genSubscriptionData();
+    return subscriptions;
+  };
 
-  const insertSubscriptions = async () => {
+  const insertSubscriptions = async (subscriptions) => {
     try {
       console.log("inserting subscription data --- start");
       await Subscription.insertMany(subscriptions);
@@ -64,7 +57,9 @@ const insertData = async () => {
       console.log("error inserting subscription data", error);
     }
   };
-  await insertSubscriptions();
+  const plans = await insertPlans();
+  const subscriptions = genSubscriptionsData(plans);
+  await insertSubscriptions(subscriptions);
 };
 
-await insertData();
+export default insertData;
