@@ -48,3 +48,22 @@ const generateSubscriptionsData = (plans) => {
 
   return subscriptions;
 };
+
+
+// insert subscription data
+const insertSubscriptions = async (subscriptions) => {
+    if (subscriptions.length === 0) {
+      console.log("No subscriptions to insert.");
+      return;
+    }
+  
+    try {
+      console.log("Inserting subscription data...");
+      await Subscription.insertMany(subscriptions);
+      console.log("Subscriptions inserted.");
+    } catch (error) {
+      console.error("Error inserting subscriptions:", error);
+    }
+  };
+
+  
