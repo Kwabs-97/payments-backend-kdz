@@ -67,3 +67,6 @@ const insertData = async () => {
 };
 
 export { insertData };
+
+// insertData looks expensive as it's doing too much
+// apply separation of concerns where each function does a specific job
