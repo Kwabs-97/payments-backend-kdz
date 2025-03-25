@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { plansData } from "../data/plans.data";
 import { Subscription, Plan } from "../schemas";
+import { plansData, subscriptionCounts } from "../data";
 
 // clear database records for plans and subscriptions
-const clearData = async () => {
+const cleanData = async () => {
   console.log("cleaning database -- start");
   await Plan.deleteMany({});
   await Subscription.deleteMany({});
@@ -21,4 +21,30 @@ const insertPlans = async () => {
     console.log("error inserting plans", []);
     return [];
   }
+};
+
+// Generate subscription data
+
+const generateSubscriptionsData = (plans) => {
+  console.log("generating subscription data... start");
+
+  const subscriptions = [];
+  for (const plan in plansData) {
+    const count = subscriptionCounts[plan.name];
+    for (let i = 0; i < count; i++) {
+      subscriptions.push({
+        business_id: uuidv4(),
+        email: `unique_business@${i}.com`,
+        plan_id: plan._id,
+        payment_platform: {
+          token: uuidv4(),
+          external_id: uuidv4(),
+          name: Math.random() > 0.5 ? "Stripe" : "Paypal",
+        },
+      });
+    }
+  }
+  console.log("generating subscription data -- complete");
+
+  return subscriptions;
 };

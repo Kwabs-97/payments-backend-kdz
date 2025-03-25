@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { plansData } from "../data/plans.data.js";
 import { Plan, Subscription } from "../schemas/index.js";
+import { plansData } from "../data/index.js";
 
 const insertData = async () => {
   // insert plans
