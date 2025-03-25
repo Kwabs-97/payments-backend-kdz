@@ -73,20 +73,6 @@ const insertData = async () => {
     }
   };
 
-  //   susbscription data generation and insertion start
-
-  //   const platinumSubscription = {
-  //       business_id: generate_unique_id,
-  //       email: unique_business_email,
-  //       plan_id: platinum_id, //This represents the id of the
-  //       platinum plan
-  //       payment_platform: {
-  //       token: random_string_token,
-  //       external_id: random_string,
-  //       name: 'stripe' or 'paypal'
-  //       }
-  //       }
-
   const subscriptions = [];
   async function genSubscriptionData() {
     const insertedPlansData = await insertPlans();
