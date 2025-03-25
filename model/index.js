@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { plansData } from "../data/plans.data.js";
 import { Plan, Subscription } from "../schemas/index.js";
+import { plansData } from "../data/index.js";
 
 const insertData = async () => {
   // insert plans
@@ -66,4 +66,7 @@ const insertData = async () => {
   await insertSubscriptions(subscriptions);
 };
 
-export default insertData;
+export { insertData };
+
+// insertData looks expensive as it's doing too much
+// apply separation of concerns where each function does a specific job
