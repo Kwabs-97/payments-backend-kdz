@@ -3,7 +3,7 @@ import { Subscription, Plan } from "../schemas";
 import { plansData, subscriptionCounts } from "../data";
 
 // clear database records for plans and subscriptions
-const cleanData = async () => {
+const cleanDatabase = async () => {
   console.log("cleaning database -- start");
   await Plan.deleteMany({});
   await Subscription.deleteMany({});
@@ -49,21 +49,32 @@ const generateSubscriptionsData = (plans) => {
   return subscriptions;
 };
 
-
 // insert subscription data
 const insertSubscriptions = async (subscriptions) => {
-    if (subscriptions.length === 0) {
-      console.log("No subscriptions to insert.");
-      return;
-    }
-  
-    try {
-      console.log("Inserting subscription data...");
-      await Subscription.insertMany(subscriptions);
-      console.log("Subscriptions inserted.");
-    } catch (error) {
-      console.error("Error inserting subscriptions:", error);
-    }
-  };
+  if (subscriptions.length === 0) {
+    console.log("No subscriptions to insert.");
+    return;
+  }
 
-  
+  try {
+    console.log("Inserting subscription data...");
+    await Subscription.insertMany(subscriptions);
+    console.log("Subscriptions inserted.");
+  } catch (error) {
+    console.error("Error inserting subscriptions:", error);
+  }
+};
+
+// main function
+const insertData = async () => {
+  await cleanDatabase();
+  const plans = await insertPlans();
+  if (plans.length === 0) {
+    return;
+  }
+
+  const subscriptions = generateSubscriptionsData(plans);
+  await insertSubscriptions(subscriptions);
+};
+
+export { insertData };
