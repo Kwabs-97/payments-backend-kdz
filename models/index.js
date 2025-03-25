@@ -62,3 +62,12 @@ const insertPlans = async () => {
 
 insertPlans()
 
+const subscriptionCounts= {
+    Freemium: 500,
+    Bronze: 7000,
+    Silver: 12000,
+    Gold: 8000,
+    Platinum: 5000
+}
+
+
