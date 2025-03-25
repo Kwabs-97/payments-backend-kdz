@@ -59,9 +59,6 @@ const insertData = async () => {
     ]
 
 
-
-
-
     // insert plans 
     const insertPlans = async () => {
 
@@ -74,10 +71,6 @@ const insertData = async () => {
         }
     }
     insertPlans()
-
-
-
-
 
     //susbscription data generation and insertion start
 
@@ -104,7 +97,6 @@ const insertData = async () => {
         }
 
         //generate subscription data
-
         console.log("generating subscription data --- start")
         for (const plan of plansData) {
             const count = subscriptionCounts[plan.name]
@@ -123,29 +115,24 @@ const insertData = async () => {
             }
         }
         console.log("generating subscription data --- complete")
-
         console.log("subscription data ---", subscriptions)
-
-        const insertSubscriptions = async () => {
-            try {
-                console.log("inserting subscription data --- start")
-                await Susbscription.insertMany(subscriptions)
-            } catch (error) {
-                console.log("error inserting subscription data", error)
-            }
-        }
-
-
-        insertSubscriptions()
     }
+    genSubscriptionData()
 
+    const insertSubscriptions = async () => {
+        try {
+            console.log("inserting subscription data --- start")
+            await Susbscription.insertMany(subscriptions)
+            console.log("inserting subscription data --- complete")
 
-
+        } catch (error) {
+            console.log("error inserting subscription data", error)
+        }
+    }
+    insertSubscriptions()
 }
 
-
-
-
+insertData()
 
 
 
