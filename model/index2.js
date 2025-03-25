@@ -42,7 +42,11 @@ const generateSubscriptionsData = (plans) => {
   }
 
   console.log(`Generated ${subscriptions.length} subscriptions.`);
-  return subscriptions;
+
+  // subscription returns numeric keys values due to the loop
+  // convert to array
+  const subsArr = Object.values(subscriptions);
+  return subsArr;
 };
 
 const insertSubscriptions = async (subscriptions) => {

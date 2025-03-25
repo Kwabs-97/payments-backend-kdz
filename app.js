@@ -4,7 +4,7 @@ async function main() {
   await dbConnect();
   // await insertData();
   const subscriptions = await getSubscriptions();
-  console.log(subscriptions["0"].plan_id.price);
+  console.log(subscriptions);
 }
 
 await main();
