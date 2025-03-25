@@ -66,4 +66,4 @@ const insertData = async () => {
   await insertSubscriptions(subscriptions);
 };
 
-export default insertData;
+export { insertData };
