@@ -70,4 +70,9 @@ const insertData = async () => {
   await insertSubscriptions(subscriptions);
 };
 
-export { insertData };
+const getSubscriptions = async () => {
+  const subscriptions = await Subscription.find().populate("plan_id");
+  console.log(subscriptions);
+  return subscriptions;
+};
+export { insertData, getSubscriptions };
