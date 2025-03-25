@@ -17,19 +17,19 @@ const plansSchema = new mongoose.Schema({
 const subscriptionSchema = new mongoose.Schema({
   business_id: {
     type: String,
-    required,
-    unique,
+    required: true,
+    unique: true,
   },
 
-  email: { type: String, required, unique },
-  plan_id: { type: mongoose.Types.ObjectId, required, ref: "Plans" },
+  email: { type: String, required: true, unique: true },
+  plan_id: { type: mongoose.Types.ObjectId, required: true, ref: "Plans" },
   payment_platform: {
     token: {
       type: String,
-      required,
+      required: true,
     },
-    external_id: { type: String, required },
-    name: { type: String, required, enum: ["Paypal", "Stripe"] },
+    external_id: { type: String, required: true },
+    name: { type: String, required: true, enum: ["Paypal", "Stripe"] },
   },
 });
 
