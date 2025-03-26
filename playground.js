@@ -13,17 +13,24 @@ const subscriptionCounts = {
 };
 
 const insertPlans = async () => {
+  console.log("clearing db -- start");
   await Plan.deleteMany({});
   await Subscription.deleteMany({});
 
-  console.log("inserting plans data --- start");
-  const plans = await Plan.insertMany(plansData);
-  return plans;
+  console.log("clearing db -- complete");
+  try {
+    console.log("inserting plans into db -- start");
+    const plans = await Plan.insertMany(plansData);
+    console.log("inserting plans into db -- complete");
+    return plans;
+  } catch (error) {
+    console.log("error inserting plans into db", error);
+  }
 };
 
-const subscriptions = [];
-
 async function generateSubs(plans) {
+  console.log("generating subscriptions -- start");
+  const subscriptions = [];
   let emailCounter = 0;
   for (const plan of plans) {
     const count = subscriptionCounts[plan.name];
@@ -41,14 +48,28 @@ async function generateSubs(plans) {
       emailCounter++;
     }
   }
-
+  console.log("subscriptions generation -- complete");
   return subscriptions;
 }
 
-const plans = await insertPlans();
-const subs = await generateSubs(plans);
+const dbPlans = await insertPlans();
+const generatedSubs = await generateSubs(dbPlans);
 
+const insertSubs = async (subscriptions) => {
+  if (!subscriptions) {
+    return null;
+  }
+  try {
+    console.log("inserting subscriptions into db -- start");
+    const subs = Subscription.insertMany(subscriptions);
+    console.log("inserting subscription into db-- complete");
+    return subs;
+  } catch (error) {}
+  console.log("error inserting generated subscriptions into db", error);
+};
 
+const dbSubscriptions = await insertSubs(generatedSubs);
+console.log("inserted subscriptions", dbSubscriptions);
 
 const getSubs = async () => {
   try {
@@ -60,5 +81,4 @@ const getSubs = async () => {
   }
 };
 
-const subsData = await getSubs();
-console.log(`Total subscriptions in database: ${subsData.length}`);
+export const populatedSubs = await getSubs();

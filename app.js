@@ -1,9 +1,9 @@
 import dbConnect from "./config/mongoose.js";
-import { insertData, getSubscriptions } from "./model/index2.js";
+import { dbSubscriptions } from "./playground.js";
+
 async function main() {
   await dbConnect();
-  // await insertData();
-  const subscriptions = await getSubscriptions();
+  const subscriptions = await dbSubscriptions();
   console.log(subscriptions);
 }
 
