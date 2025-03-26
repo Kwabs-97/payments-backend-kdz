@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const plansSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
@@ -17,50 +16,23 @@ const plansSchema = new mongoose.Schema({
 const subscriptionSchema = new mongoose.Schema({
   business_id: {
     type: String,
-    required: true,
-    unique: true,
+    required:true,
+    unique:true,
   },
 
-  email: { type: String, required: true, unique: true },
-  plan_id: { type: mongoose.Types.ObjectId, required: true, ref: "Plans" },
+  email: { type: String, required:true, unique: true },
+  plan_id: { type: mongoose.Types.ObjectId, required:true, ref: 'Plan' },
   payment_platform: {
     token: {
       type: String,
-      required: true,
+      required:true
     },
-    external_id: { type: String, required: true },
-    name: { type: String, required: true, enum: ["Paypal", "Stripe"] },
+    external_id: { type: String, required:true },
+    name: { type: String, required:true, enum: ['Paypal', 'Stripe'] }
   },
 });
 
-const Subscription = mongoose.model("Subscription", subscriptionSchema);
-const Plan = mongoose.model("Plans", plansSchema);
-export { Plan, Subscription };
+const Plan = new mongoose.model('Plan', plansSchema);
+const Subscription = new mongoose.model('Subscription', subscriptionSchema)
 
-//Plans Schema
-// {
-//   name: 'String',​
-//   price: 'Number',
-//   period: 'String',
-//   status: 'A' | 'D',
-//   features: {​
-//   videos: boolean,
-//   audio: boolean,
-//   download: boolean,
-//   streaming: boolean,
-//   customize: boolean​
-//   }
-//   payment_platform_name}
-
-// Subscriptions Schema
-
-// {
-//   business_id: 'String',
-//   email: 'String',
-//   plan_id: 'String',
-//   payment_platform: {
-//   token: 'String',
-//   external_id: 'String',
-//   name: 'Stripe' | 'Paypal
-//   }
-//   }
+export {Plan, Subscription}

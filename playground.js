@@ -1,18 +1,8 @@
-import { plansData } from "./data/index.js";
+import { plansData, subscriptionCounts } from "./data/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { Subscription, Plan } from "./schemas/index.js";
-import dbConnect from "./config/mongoose.js";
 
-await dbConnect();
-const subscriptionCounts = {
-  Freemium: 500,
-  Bronze: 7000,
-  Silver: 12000,
-  Gold: 8000,
-  Platinum: 5000,
-};
-
-const insertPlans = async () => {
+export const insertPlans = async () => {
   console.log("clearing db -- start");
   await Plan.deleteMany({});
   await Subscription.deleteMany({});
@@ -28,7 +18,7 @@ const insertPlans = async () => {
   }
 };
 
-async function generateSubs(plans) {
+export const generateSubs = async (plans) => {
   console.log("generating subscriptions -- start");
   const subscriptions = [];
   let emailCounter = 0;
@@ -50,35 +40,29 @@ async function generateSubs(plans) {
   }
   console.log("subscriptions generation -- complete");
   return subscriptions;
-}
+};
 
-const dbPlans = await insertPlans();
-const generatedSubs = await generateSubs(dbPlans);
-
-const insertSubs = async (subscriptions) => {
+export const insertSubs = async (subscriptions) => {
   if (!subscriptions) {
     return null;
   }
   try {
     console.log("inserting subscriptions into db -- start");
-    const subs = Subscription.insertMany(subscriptions);
+    const subs = await Subscription.insertMany(subscriptions);
     console.log("inserting subscription into db-- complete");
     return subs;
-  } catch (error) {}
-  console.log("error inserting generated subscriptions into db", error);
+  } catch (error) {
+    console.log("error inserting generated subscriptions into db", error);
+  }
 };
 
-const dbSubscriptions = await insertSubs(generatedSubs);
-console.log("inserted subscriptions", dbSubscriptions);
-
-const getSubs = async () => {
+export const getSubs = async () => {
   try {
     const subs = await Subscription.find().populate("plan_id");
+    console.log(subs);
     return subs;
   } catch (error) {
     console.error("Error fetching subscriptions:", error);
     return [];
   }
 };
-
-export const populatedSubs = await getSubs();

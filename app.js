@@ -1,13 +1,19 @@
 import dbConnect from "./config/mongoose.js";
-import { dbSubscriptions } from "./playground.js";
-
+import { getSubs } from "./playground.js";
+// dbConnect()
 async function main() {
-  await dbConnect();
-  const subscriptions = await dbSubscriptions();
-  console.log(subscriptions);
+    await dbConnect();
+    const subscriptions = await getSubs();
+    const filtered = subscriptions.filter((subscription) => {
+        return subscription.plan_id.price >= 50
+    })
+
+    console.log(filtered)
+
+
 }
 
-await main();
+main();
 
 /*
 insights here, subscriptions.plain.id is of type Object.ID,
