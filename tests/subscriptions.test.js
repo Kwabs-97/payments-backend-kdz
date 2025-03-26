@@ -2,12 +2,14 @@ import mongoose from "mongoose";
 import { generateSubs } from "../model/index.js";
 import { Plan, Subscription } from "../schemas/index.js";
 import { insertSubs } from "../model/index.js";
+import dotenv from 'dotenv'
+dotenv.config()
 
 describe('Subscription generation and db population Verification', () => {
     //setup and tear down
     beforeAll(async () => {
         console.log('connecting to database')
-        await mongoose.connect(`mongodb+srv://thisissamuelyeboah:KhobeWayne@kwabscluster.d7jjk.mongodb.net/`)
+        await mongoose.connect(`mongodb+srv://thisissamuelyeboah:${process.env.DB_USER_PASSWORD}@kwabscluster.d7jjk.mongodb.net/`)
         console.log('connected to database')
     })
     afterAll(async () => {

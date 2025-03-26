@@ -1,13 +1,15 @@
 import mongoose from "mongoose"
+import dotenv from 'dotenv'
+dotenv.config()
 import { insertPlans } from "../model"
 import dbConnect from "../config/mongoose"
 import { Plan, Subscription } from "../schemas"
-describe("Db population verfication checks", () => {
+describe("Plan population verification", () => {
     //setup and tear down
     beforeAll(async () => {
         //connect to the databse
         // jest.setTimeout(100000)
-        await mongoose.connect(`mongodb+srv://thisissamuelyeboah:KhobeWayne@kwabscluster.d7jjk.mongodb.net/`)
+        await mongoose.connect(`mongodb+srv://thisissamuelyeboah:${process.env.DB_USER_PASSWORD}@kwabscluster.d7jjk.mongodb.net/`)
     })
     afterAll(async () => {
 
@@ -28,4 +30,4 @@ describe("Db population verfication checks", () => {
         })
     })
 
-})
+})  
