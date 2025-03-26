@@ -17,5 +17,5 @@ const genCSV = async (header ,recordsArr) => {
     await csvWriter.writeRecords(records);
 };
 
-
+await genCSV();
 export default genCSV;

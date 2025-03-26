@@ -1,50 +1,69 @@
 import dbConnect from "./config/mongoose.js";
 import { getSubs } from "./model/index.js";
-import genCSV from "./utils/gen_csv.js";
-// dbConnect()
+import { createObjectCsvWriter } from "csv-writer";
 
-export const recordsArr = []
 async function main() {
     await dbConnect();
     const subscriptions = await getSubs();
-    const filteredSubscriptioins = subscriptions.filter((subscription) => {
-        return subscription.plan_id.price >= 50
-    })
 
-    // filteredSubscriptioins returned numeric keys. From the loop in model/index so we extract the values
-    const data = Object.values(filteredSubscriptioins);
-
-    const filteredFields = data.map((da) => {
-        const filteredFields = { business_id: da.business_id, email: da.email, plan_id: da.plan_id._id, plan_name: da.plan_id.name, plan_price: da.plan_id.price, payment_platform_name: da.payment_platform.name }
-        return filteredFields
+    // Filter subscriptions with a plan price greater than or equal to 50
+    const highValueSubscriptions = subscriptions.filter((subscription) => {
+        return subscription.plan_id.price >= 50;
     });
-    recordsArr.push(filteredFields);
-    recordsArr.flat();
 
-    const header = [
-        { id: 'business_id', title: 'business_id' },
-        { id: 'plan_id', title: 'plan_id' },
-        { id: 'email', title: 'email' },
-        { id: 'plan_name', title: 'plan_name' },
-        { id: 'plan_price', title: 'plan_price' },
-        { id: 'payment_platform_name', title: 'payment_platform_name' }
-    ]
+    // Extract the values from the filtered subscriptions
+    const subscriptionData = Object.values(highValueSubscriptions);
 
-    await genCSV(header, recordsArr);
+    // Map subscription data to a structured format
+    const subscriptionHeaders = subscriptionData.map((subscription) => {
+        return {
+            business_id: subscription.business_id,
+            email: subscription.email,
+            plan_id: subscription.plan_id._id,
+            plan_name: subscription.plan_id.name,
+            plan_price: subscription.plan_id.price,
+            payment_platform_name: subscription.payment_platform.name,
+        };
+    });
+
+    // Function to generate the CSV file
+    const generateCSVFile = async (data) => {
+        const csvWriter = createObjectCsvWriter({
+            path: 'file.csv',
+            header: [
+                { id: 'business_id', title: 'business_id' },
+                { id: 'email', title: 'email' },
+                { id: 'plan_id', title: 'plan_id' },
+                { id: 'plan_name', title: 'plan_name' },
+                { id: 'plan_price', title: 'plan_price' },
+                { id: 'payment_platform_name', title: 'payment_platform_name' },
+            ],
+        });
+
+        // Map data to CSV records
+        const csvRecords = data.map((record) => ({
+            business_id: record.business_id,
+            email: record.email,
+            plan_id: record.plan_id,
+            plan_name: record.plan_name,
+            plan_price: record.plan_price,
+            payment_platform_name: record.payment_platform_name,
+        }));
+
+        console.log("Generating CSV file -- start");
+        await csvWriter.writeRecords(csvRecords);
+        console.log("Generating CSV file -- complete");
+    };
+
+    // Call the generateCSVFile function with the processed data
+    await generateCSVFile(subscriptionHeaders);
 }
+
 await main();
 
-
-
-
-await genCSV();
-
-
-
 /*
-insights here, subscriptions.plain.id is of type Object.ID,
-JSON API's like REST or GRAPHQL, doesn't support Object.ID since it is 
-a mongoDB specific type.
-If you wish to send subscriptions over a JSON API, convert the entire subscription to json object using the .lean() method and then convert plain id to string using the toString() method
-
+Insights:
+- `subscriptions.plan_id` is of type `ObjectId`, which is specific to MongoDB.
+- JSON APIs like REST or GraphQL do not support `ObjectId`. 
+- To send subscriptions over a JSON API, convert the entire subscription to a JSON object using the `.lean()` method and then convert `ObjectId` to a string using the `toString()` method.
 */
