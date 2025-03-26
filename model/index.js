@@ -59,7 +59,7 @@ export const insertSubs = async (subscriptions) => {
 export const getSubs = async () => {
   try {
     console.log('getting subscriptions from db -- start')
-    const subs = await Subscription.find().populate("plan_id");
+    const subs = await Subscription.find().populate("plan_id").lean();
     console.log('getting subscriptions from db -- complete')
     return subs;
   } catch (error) {
@@ -67,3 +67,26 @@ export const getSubs = async () => {
     return [];
   }
 };
+
+//genSubs takes too long due to large dataset
+//uncomment the code beneath for pagination
+// export const getSubsPaginated = async (page = 1, limit = 10) => {
+//   try {
+//     console.log(`getting subscriptions from db -- start (page: ${page}, limit: ${limit})`);
+    
+//     // Calculate the number of documents to skip
+//     const skip = (page - 1) * limit;
+
+//     // Fetch subscriptions with pagination
+//     const subs = await Subscription.find()
+//       .populate("plan_id")
+//       .skip(skip)
+//       .limit(limit);
+
+//     console.log('getting subscriptions from db -- complete');
+//     return subs;
+//   } catch (error) {
+//     console.error("Error fetching subscriptions:", error);
+//     return [];
+//   }
+// };

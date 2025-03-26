@@ -1,18 +1,25 @@
 import dbConnect from "./config/mongoose.js";
 import { getSubs } from "./model/index.js";
 import { createObjectCsvWriter } from "csv-writer";
+// import { getSubsPaginated } from "./model/index.js";
 
 async function main() {
     await dbConnect();
+
+    // if pagination, uncomment the code below and comment out subscriptions
+    // const page = 1,
+    // cont limit = 50
+    // const paginatedSubscriptions = await getSubsPaginated(page, limit)
+
     const subscriptions = await getSubs();
 
     // Filter subscriptions with a plan price greater than or equal to 50
-    const highValueSubscriptions = subscriptions.filter((subscription) => {
+    const paidSubscriptions = subscriptions.filter((subscription) => {
         return subscription.plan_id.price >= 50;
     });
 
     // Extract the values from the filtered subscriptions
-    const subscriptionData = Object.values(highValueSubscriptions);
+    const subscriptionData = Object.values(paidSubscriptions);
 
     // Map subscription data to a structured format
     const subscriptionHeaders = subscriptionData.map((subscription) => {
