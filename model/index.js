@@ -48,15 +48,14 @@ const insertData = async () => {
         });
       }
     }
-    console.log("generating subscription data --- complete");
+    console.log(`--subscriptions-- ${subscriptions.length}`);
     return subscriptions;
   };
 
   const insertSubscriptions = async (subscriptions) => {
     try {
-      console.log("inserting subscription data --- start");
-      await Subscription.insertMany(subscriptions);
-      console.log("inserting subscription data --- complete");
+      const insertedSubs = await Subscription.insertMany(subscriptions);
+      console.log(`-- insertedSubs ${insertedSubs.length}`);
     } catch (error) {
       console.log("error inserting subscription data", error);
     }
