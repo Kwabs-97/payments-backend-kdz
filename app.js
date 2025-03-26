@@ -1,6 +1,8 @@
 import dbConnect from "./config/mongoose.js";
 import { getSubs } from "./model/index.js";
 // dbConnect()
+
+export const headersArr = []
 async function main() {
     await dbConnect();
     const subscriptions = await getSubs();
@@ -8,12 +10,17 @@ async function main() {
         return subscription.plan_id.price >= 50
     })
 
-    console.log(filtered)
+    // filtered returned numeric keys. From the loop in model/index so we extract the values
+    const data = Object.values(filtered);
 
-
+    const headers = data.map((da) => {
+        const headers = { business_id: da.business_id, email: da.email, plane_name: da.plan_id.name, plan_price: da.plan_id.price, payment_platform_name: da.payment_platform.name }
+        return headers
+    });
+    headersArr.push(headers)
 }
+await main();
 
-main();
 
 /*
 insights here, subscriptions.plain.id is of type Object.ID,

@@ -58,8 +58,7 @@ export const insertSubs = async (subscriptions) => {
 
 export const getSubs = async () => {
   try {
-    const subs = await Subscription.find().populate("plan_id");
-    console.log(subs);
+    const subs = await Subscription.find().populate("plan_id").lean();
     return subs;
   } catch (error) {
     console.error("Error fetching subscriptions:", error);
