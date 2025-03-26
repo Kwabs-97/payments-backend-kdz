@@ -19,14 +19,12 @@ describe("Db population verfication checks", () => {
 
         // Clear collections before each test
         await Plan.deleteMany({});
-        await Subscription.deleteMany({});
     });
 
     describe('Plan creation and Polution', () => {
         it("should create and populate 4 plans correclty", async () => {
             const insertedPlans = await insertPlans();
             expect(insertedPlans.length).toBe(4);
-            console.log(insertedPlans)
         })
     })
 
