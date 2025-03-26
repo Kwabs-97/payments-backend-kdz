@@ -3,11 +3,13 @@ import { v4 as uuidv4 } from "uuid";
 import { Subscription, Plan } from "../schemas/index.js";
 
 export const insertPlans = async () => {
-  console.log("clearing db -- start");
-  await Plan.deleteMany({});
-  await Subscription.deleteMany({});
 
-  console.log("clearing db -- complete");
+  //uncomment code below if collections are already populated
+  // console.log("clearing db -- start");
+  // await Plan.deleteMany({});
+  // await Subscription.deleteMany({});
+
+  // console.log("clearing db -- complete");
   try {
     console.log("inserting plans into db -- start");
     const plans = await Plan.insertMany(plansData);
