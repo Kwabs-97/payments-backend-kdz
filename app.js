@@ -3,26 +3,26 @@ import { getSubs } from "./model/index.js";
 import { createObjectCsvWriter } from "csv-writer";
 // dbConnect()
 
-export const headersArr = []
+export const recordsArr = []
 async function main() {
     await dbConnect();
     const subscriptions = await getSubs();
-    const filtered = subscriptions.filter((subscription) => {
+    const filteredSubscriptioins = subscriptions.filter((subscription) => {
         return subscription.plan_id.price >= 50
     })
 
-    // filtered returned numeric keys. From the loop in model/index so we extract the values
-    const data = Object.values(filtered);
+    // filteredSubscriptioins returned numeric keys. From the loop in model/index so we extract the values
+    const data = Object.values(filteredSubscriptioins);
 
-    const headers = data.map((da) => {
-        const headers = { business_id: da.business_id, email: da.email, plan_name: da.plan_id.name, plan_price: da.plan_id.price, payment_platform_name: da.payment_platform.name }
-        return headers
+    const filteredFields = data.map((da) => {
+        const filteredFields = { business_id: da.business_id, email: da.email, plan_name: da.plan_id.name, plan_price: da.plan_id.price, payment_platform_name: da.payment_platform.name }
+        return filteredFields
     });
-    headersArr.push(headers)
+    recordsArr.push(filteredFields);
+    recordsArr.flat();
 }
 await main();
 
-const filteredHeaders = headersArr.flat();
 
 const genCSV = async () => {
     const csvWriter = createObjectCsvWriter({
