@@ -1,4 +1,4 @@
-import { plansData, subscriptionCounts } from "../data/index.js";
+import { plansData, subscriptionCounts } from "../constants/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { Subscription, Plan } from "../schemas/index.js";
 
