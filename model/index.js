@@ -1,71 +1,68 @@
+import { plansData, subscriptionCounts } from "../data/index.js";
 import { v4 as uuidv4 } from "uuid";
-import { Plan, Subscription } from "../schemas/index.js";
-import { plansData } from "../data/index.js";
+import { Subscription, Plan } from "../schemas/index.js";
 
-const insertData = async () => {
-  // insert plans
-  const insertPlans = async () => {
-    console.log("clear database -- start");
-    await Plan.deleteMany({});
-    await Subscription.deleteMany({});
-    console.log("clear database -- complete");
-    try {
-      console.log("inserting plans data --- start");
-      const plans = await Plan.insertMany(plansData);
-      console.log("inserting plans data --- complete");
-      return plans;
-    } catch (error) {
-      console.log("error inserting plans data ---", error);
-    }
-  };
+export const insertPlans = async () => {
+  console.log("clearing db -- start");
+  await Plan.deleteMany({});
+  await Subscription.deleteMany({});
 
-  const genSubscriptionsData = (plans) => {
-    //subscription data
-    const subscriptionCounts = {
-      Freemium: 500,
-      Bronze: 7000,
-      Silver: 12000,
-      Gold: 8000,
-      Platinum: 5000,
-    };
-
-    const subscriptions = [];
-
-    //generate subscription data
-    console.log("generating subscription data --- start");
-    for (const plan of plans) {
-      const count = subscriptionCounts[plan.name];
-      for (let i = 0; i < count; i++) {
-        subscriptions.push({
-          business_id: uuidv4(),
-          email: `unique_business@${i}.com`,
-          plan_id: plan._id,
-          payment_platform: {
-            token: uuidv4(),
-            external_id: uuidv4(),
-            name: Math.random() > 0.5 ? "Stripe" : "Paypal",
-          },
-        });
-      }
-    }
-    console.log(`--subscriptions-- ${subscriptions.length}`);
-    return subscriptions;
-  };
-
-  const insertSubscriptions = async (subscriptions) => {
-    try {
-      const insertedSubs = await Subscription.insertMany(subscriptions);
-      console.log(`-- insertedSubs ${insertedSubs.length}`);
-    } catch (error) {
-      console.log("error inserting subscription data", error);
-    }
-  };
-  const plans = await insertPlans();
-  const subscriptions = genSubscriptionsData(plans);
-  await insertSubscriptions(subscriptions);
+  console.log("clearing db -- complete");
+  try {
+    console.log("inserting plans into db -- start");
+    const plans = await Plan.insertMany(plansData);
+    console.log("inserting plans into db -- complete");
+    return plans;
+  } catch (error) {
+    console.log("error inserting plans into db", error);
+  }
 };
 
-export { insertData };
+export const generateSubs = async (plans) => {
+  console.log("generating subscriptions -- start");
+  const subscriptions = [];
+  let emailCounter = 0;
+  for (const plan of plans) {
+    const count = subscriptionCounts[plan.name];
+    for (let i = 0; i < count; i++) {
+      subscriptions.push({
+        business_id: uuidv4(),
+        email: `unique_business_${emailCounter}@example.com`,
+        plan_id: plan._id,
+        payment_platform: {
+          token: uuidv4(),
+          external_id: uuidv4(),
+          name: Math.random() > 0.5 ? "Stripe" : "Paypal",
+        },
+      });
+      emailCounter++;
+    }
+  }
+  console.log("subscriptions generation -- complete");
+  return subscriptions;
+};
 
-// insertData looks expensive as it's doing too much
-// apply separation of concerns where each function does a specific job
+export const insertSubs = async (subscriptions) => {
+  if (!subscriptions) {
+    return null;
+  }
+  try {
+    console.log("inserting subscriptions into db -- start");
+    const subs = await Subscription.insertMany(subscriptions);
+    console.log("inserting subscription into db-- complete");
+    return subs;
+  } catch (error) {
+    console.log("error inserting generated subscriptions into db", error);
+  }
+};
+
+export const getSubs = async () => {
+  try {
+    const subs = await Subscription.find().populate("plan_id");
+    console.log(subs);
+    return subs;
+  } catch (error) {
+    console.error("Error fetching subscriptions:", error);
+    return [];
+  }
+};

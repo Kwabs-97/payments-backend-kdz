@@ -1,5 +1,5 @@
 import dbConnect from "./config/mongoose.js";
-import { getSubs } from "./playground.js";
+import { getSubs } from "./model/playground.js";
 // dbConnect()
 async function main() {
     await dbConnect();
