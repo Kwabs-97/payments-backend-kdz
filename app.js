@@ -1,5 +1,6 @@
 import dbConnect from "./config/mongoose.js";
 import { getSubs } from "./model/index.js";
+import { createObjectCsvWriter } from "csv-writer";
 // dbConnect()
 
 export const headersArr = []
@@ -14,12 +15,41 @@ async function main() {
     const data = Object.values(filtered);
 
     const headers = data.map((da) => {
-        const headers = { business_id: da.business_id, email: da.email, plane_name: da.plan_id.name, plan_price: da.plan_id.price, payment_platform_name: da.payment_platform.name }
+        const headers = { business_id: da.business_id, email: da.email, plan_name: da.plan_id.name, plan_price: da.plan_id.price, payment_platform_name: da.payment_platform.name }
         return headers
     });
     headersArr.push(headers)
 }
 await main();
+
+const filteredHeaders = headersArr.flat();
+
+const genCSV = async () => {
+    const csvWriter = createObjectCsvWriter({
+        path: 'file.csv',
+        header: [
+            { id: 'business_id', title: 'business_id' },
+            { id: 'email', title: 'email' },
+            { id: 'plan_name', title: 'plan_name' },
+            { id: 'plan_price', title: 'plan_price' },
+            { id: 'payment_platform_name', title: 'payment_platform_name' }
+        ]
+    });
+
+    // Use a single loop to process filteredHeaders
+    const records = filteredHeaders.map(header => ({
+        business_id: header.business_id,
+        email: header.email,
+        plan_name: header.plan_name,
+        plan_price: header.plan_price,
+        payment_platform_name: header.payment_platform_name
+    }));
+
+    await csvWriter.writeRecords(records);
+};
+
+await genCSV();
+
 
 
 /*
