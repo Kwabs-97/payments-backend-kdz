@@ -1,10 +1,14 @@
 import dbConnect from "./config/mongoose.js";
-import { getSubs } from "./model/index.js";
+import { insertPlans, generateSubs, insertSubs, getSubs } from "./model/index.js";
 import { createObjectCsvWriter } from "csv-writer";
 // import { getSubsPaginated } from "./model/index.js";
 
 async function main() {
     await dbConnect();
+    //uncomment code below to clear db, populate plans into the db, generate and insert subscription plans into db
+    // await insertPlans();
+    // await generateSubs();
+    // await insertSubs ();
 
     // if pagination, uncomment the code below and comment out subscriptions
     // const page = 1,
@@ -19,7 +23,7 @@ async function main() {
     });
 
     // paidSubscription returns a numberic value
-    export const subscriptionData = Object.values(paidSubscriptions);
+    const subscriptionData = Object.values(paidSubscriptions);
 
     // Map subscription data to a structured format
     const subscriptionHeaders = subscriptionData.map((subscription) => {
