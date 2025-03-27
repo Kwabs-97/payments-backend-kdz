@@ -5,10 +5,15 @@ import { createObjectCsvWriter } from "csv-writer";
 
 async function main() {
     await dbConnect();
-    //uncomment code below to clear db, populate plans into the db, generate and insert subscription plans into db
-    // await insertPlans();
-    // await generateSubs();
-    // await insertSubs ();
+    
+    /* ---- uncomment code below to clear db, populate plans into the db, generate and insert subscription plans into db
+    ------ */
+
+    // const insertedPlans = await insertPlans();
+    // const generatedSubscriptions = await generateSubs();
+    // const insertedSubscriptions = await insertSubs ();
+
+
 
     // if pagination, uncomment the code below and comment out subscriptions
     // const page = 1,
