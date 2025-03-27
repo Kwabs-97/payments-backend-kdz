@@ -11,7 +11,7 @@ async function main() {
 
     // const insertedPlans = await insertPlans();
     // const generatedSubscriptions = await generateSubs();
-    // const insertedSubscriptions = await insertSubs ();
+    // const insertedSubscriptions = await insertSubs (generatedSubsriptions);
 
 
 
