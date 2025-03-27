@@ -1,46 +1,57 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import Papa from 'papaparse';
-import { describe, test, expect, beforeEach } from '@jest/globals';
+import dotenv from 'dotenv'
 
+import { Subscription } from '../schemas/index.js';
+import mongoose from 'mongoose';
+import { getSubs } from '../model/index.js';
 
-const __dirname = path.dirname("../file.csv");
+dotenv.config()
 
-// Function to filter and save subscriptions
-function filterAndSaveSubscriptions(inputCsv, outputCsv) {
-    const csvData = fs.readFileSync(inputCsv, 'utf8');
-    const { data } = Papa.parse(csvData, { header: true, dynamicTyping: true });
-    
-    const filteredData = data.filter(row => row.plan_price >= 50);
-    const csvOutput = Papa.unparse(filteredData);
-    
-    fs.writeFileSync(outputCsv, csvOutput);
-}
+const csvData = fs.readFileSync('./file.csv', 'utf8');
+const { data } = Papa.parse(csvData, { header: true, dynamicTyping: true })
 
-describe('Subscription Filtering', () => {
-    let inputCsvPath, outputCsvPath;
-
-    beforeEach(() => {
-        inputCsvPath = path.join(__dirname, 'test_input.csv');
-        outputCsvPath = path.join(__dirname, 'test_output.csv');
-        
-        const sampleCsv = `business_id,email,plan_id,plan_name,plan_price,payment_platform_name\n`
-            + `123,test1@example.com,001,Gold,100,Paypal\n`
-            + `456,test2@example.com,002,Silver,50,Stripe\n`
-            + `789,test3@example.com,003,Bronze,30,Paypal\n`;
-        
-        fs.writeFileSync(inputCsvPath, sampleCsv);
-    });
-
-    test('filters subscriptions with plan_price >= 50', () => {
-        filterAndSaveSubscriptions(inputCsvPath, outputCsvPath);
-        const outputCsvData = fs.readFileSync(outputCsvPath, 'utf8');
-        const { data } = Papa.parse(outputCsvData, { header: true, dynamicTyping: true });
-        
-        expect(data.length).toBe(2);
-        expect(data.every(row => row.plan_price >= 50)).toBe(true);
-    });
+// Filter out empty rows
+const structuredCSVRows = data.filter(row => {
+    // Ensure the row is not null, not undefined, and has at least one non-empty value
+    return row && Object.values(row).some(value => value !== null && value !== '');
 });
 
-export { filterAndSaveSubscriptions };
+
+describe('csv verfication', () => {
+    beforeAll(async () => {
+        console.log('connecting to database')
+        await mongoose.connect(`mongodb+srv://thisissamuelyeboah:${process.env.DB_USER_PASSWORD}@kwabscluster.d7jjk.mongodb.net/`)
+        console.log('connected to database')
+    })
+    afterAll(async () => {
+        await mongoose.connection.close()
+    })
+
+
+    describe('compare subscription size to csv size', () => {
+        it('measure and compare sizes', async () => {
+            const subscriptions = await getSubs();
+
+
+            const paidSubscriptions = subscriptions.filter((subscription) => {
+                return subscription.plan_id.price >= 50;
+            });
+
+
+            const subscriptionData = Object.values(paidSubscriptions);
+            expect(subscriptionData.length).toEqual(structuredCSVRows.length)
+        })
+    })
+
+    describe('paid plan', () => {
+        it('should return plan price >= 50', () => {
+            const paidSubscriptions = structuredCSVRows.every((row) => row.plan_price >= 50)
+            expect(paidSubscriptions).toBe(true)
+        })
+    })
+})
+
+
+

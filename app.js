@@ -18,8 +18,8 @@ async function main() {
         return subscription.plan_id.price >= 50;
     });
 
-    // Extract the values from the filtered subscriptions
-    const subscriptionData = Object.values(paidSubscriptions);
+    // paidSubscription returns a numberic value
+    export const subscriptionData = Object.values(paidSubscriptions);
 
     // Map subscription data to a structured format
     const subscriptionHeaders = subscriptionData.map((subscription) => {
